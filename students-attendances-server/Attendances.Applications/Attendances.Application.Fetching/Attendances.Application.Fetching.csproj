@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Attendances.Domains\Attendances.Domain.Core\Attendances.Domain.Core.csproj" />
+      <ProjectReference Include="..\..\Attendances.Domains\Attendances.Domain.University\Attendances.Domain.University.csproj" />
+      <ProjectReference Include="..\..\Attendances.Shared\Attendances.Shared.Commons\Attendances.Shared.Commons.csproj" />
+      <ProjectReference Include="..\Attendances.Application.Commons\Attendances.Application.Commons.csproj" />
+    </ItemGroup>
+
+</Project>

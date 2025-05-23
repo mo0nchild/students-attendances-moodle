@@ -1,0 +1,42 @@
+.report-table table {
+    & th > td {
+        font-weight: normal;
+        text-decoration: underline;
+    }
+    & tr > td {
+        cursor: pointer;
+    }
+}
+
+.report-table-container {
+  margin: 1rem 0;
+  font-size: 14px;
+}
+
+.attendance-cell {
+  font-size: 20px;
+  font-weight: 500;
+  padding: 4px;
+  vertical-align: middle;
+  transition: background-color 0.3s ease;
+}
+
+.report-table {
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+.report-table .table td,
+.report-table .table th {
+  vertical-align: middle;
+  border-left: none;
+  border-right: none;
+}
+
+
+
+/* Убираем внешние вертикальные границы у таблицы, если вдруг Bootstrap добавляет */
+.table {
+  border-left: none !important;
+  border-right: none !important;
+  border-collapse: collapse;
+}

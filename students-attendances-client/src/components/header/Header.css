@@ -1,0 +1,14 @@
+div.offcanvas {
+    background-color: #ffffff59 !important;
+}
+
+.offcanvas > .offcanvas-header {
+    background-color: #FFF;
+}
+
+.profile-block {
+    border-radius: 20px;
+    background-color: #ffffffda;
+    padding: 15px;
+    width: 100%;
+}

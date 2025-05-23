@@ -1,0 +1,21 @@
+:root {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #d0b2ff00;
+}
+::-webkit-scrollbar-thumb {
+  background: #8a8a8a;
+  background-color: #808080;
+  border: 3px solid transparent;
+  border-radius: 9px;
+  background-clip: content-box
+}
+dialog:not([open]){
+  display:none;
+}

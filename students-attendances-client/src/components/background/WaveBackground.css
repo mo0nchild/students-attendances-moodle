@@ -1,0 +1,71 @@
+:root {
+  --wave-offset: 32;
+  --wave-base: 192;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --wave-offset: 24;
+    --wave-base: 176;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --wave-offset: 16;
+    --wave-base: 160;
+  }
+}
+
+.waves-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.gradient-layer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    270deg,
+    #7b2ff7,
+    #ffa8c9,
+    #ff9472,
+    #f9c784,
+    #7b2ff7
+  );
+  background-size: 1000% 1000%;
+  animation: gradientShift 50s ease-in-out infinite;
+  z-index: 0;
+}
+
+.waves-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 100%);
+}
+
+.wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

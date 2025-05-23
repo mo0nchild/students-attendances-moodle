@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Attendances.Applications\Attendances.Application.Authorization\Attendances.Application.Authorization.csproj" />
+      <ProjectReference Include="..\..\..\Attendances.Applications\Attendances.Application.Commons\Attendances.Application.Commons.csproj" />
+      <ProjectReference Include="..\..\..\Attendances.Applications\Attendances.Application.Fetching\Attendances.Application.Fetching.csproj" />
+      <ProjectReference Include="..\..\..\Attendances.Applications\Attendances.Application.Notifications\Attendances.Application.Notifications.csproj" />
+      <ProjectReference Include="..\..\..\Attendances.Applications\Attendances.Application.Sync\Attendances.Application.Sync.csproj" />
+      <ProjectReference Include="..\..\..\Attendances.Domains\Attendances.Domain.Core\Attendances.Domain.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+
+</Project>

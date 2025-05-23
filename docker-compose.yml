@@ -1,0 +1,80 @@
+services:
+  moodle:
+    build: 
+      context: ./selfhosted-moodle
+      dockerfile: Dockerfile
+    container_name: moodle
+    deploy: 
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1024M
+    depends_on:
+      - db
+    volumes:
+      - moodledata:/var/www/moodledata
+    ports:
+      - "80:80"
+    networks:
+      - moodle-net
+
+  db:
+    image: mariadb:10.6
+    container_name: moodle-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: moodle
+      MYSQL_USER: moodle
+      MYSQL_PASSWORD: moodle
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - moodledb:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - moodle-net
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+    container_name: rabbitMQ
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=1234567890
+    ports:
+      - "5672:5672"
+      - "5673:5673"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - moodle-net
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_PASSWORD=1234567890
+      - POSTGRES_DB=Attendances.accounts
+    ports:
+      - "7272:5432"
+    networks:
+      attendances-network:
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d Attendances.Users" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    volumes:
+      - "./students-attendances-server/docker-volumes/postgres-data:/var/lib/postgresql/data"
+      - "./students-attendances-server/init.sql:/docker-entrypoint-initdb.d/init.sql"
+
+volumes:
+  moodledata:
+  moodledb:
+  rabbitmq_data:
+
+networks:
+  moodle-net:
+  attendances-network:

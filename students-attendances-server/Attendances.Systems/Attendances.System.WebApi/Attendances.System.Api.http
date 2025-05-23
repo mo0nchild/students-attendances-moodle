@@ -1,0 +1,6 @@
+@AttendancesApi_HostAddress = http://localhost:5102
+
+GET {{AttendancesApi_HostAddress}}/health/
+Accept: application/json
+
+###
