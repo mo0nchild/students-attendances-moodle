@@ -274,14 +274,9 @@ export default function LessonAttendancePage(): JSX.Element {
 								}}>
 									<thead style={{fontSize: '15px', fontWeight: 'normal'}}>
 										<tr>
-											<th style={{}}>#</th>
-											<th style={{}}>Имя</th>
-											<th style={{}}>Фамилия</th>
-											<th style={{}}>Email</th>
-											<th style={{}}>Группы</th>
-											<th style={{}}>Статус</th>
 											<th style={{}}>
 												<Form.Check
+													style={{borderColor: 'black'}}
 													inline
 													onChange={(e) => {
 														const checked = e.target.checked
@@ -296,29 +291,19 @@ export default function LessonAttendancePage(): JSX.Element {
 												/>
 
 											</th>
+											<th style={{}}>#</th>
+											<th style={{}}>Статус</th>
+											<th style={{}}>Имя</th>
+											<th style={{}}>Фамилия</th>
+											<th style={{}}>Email</th>
+											<th style={{}}>Группы</th>
+											
+											
 										</tr>
 									</thead>
 									<tbody style={{fontSize: '14px'}}>
 										{attendances.map(({ student, attendance }, index) => (
 											<tr key={student.externalId}>
-												<td>{index + 1}</td>
-												<td>{student.firstName}</td>
-												<td>{student.lastName}</td>
-												<td>{student.email}</td>
-												<td>
-													<div>{
-														student.groups.length > 0
-															? student.groups.map((g, i) => (
-																	<p className="m-0" key={`${student.externalId}-${i}`}>
-																		{ g.groupName }
-																	</p>
-																))
-															: <>Нет групп</>
-													}</div>
-												</td>
-												<td>
-													<Badge bg={getBadgeColor(attendance)}>{attendance ?? 'Н'}</Badge>
-												</td>
 												<td>
 													<Form.Check
 														inline
@@ -334,6 +319,26 @@ export default function LessonAttendancePage(): JSX.Element {
 														type={'checkbox'}
 													/>
 												</td>
+												<td>{index + 1}</td>
+												<td>
+													<Badge bg={getBadgeColor(attendance)}>{attendance ?? 'Н'}</Badge>
+												</td>
+												<td>{student.firstName}</td>
+												<td>{student.lastName}</td>
+												<td>{student.email}</td>
+												<td>
+													<div>{
+														student.groups.length > 0
+															? student.groups.map((g, i) => (
+																	<p className="m-0" key={`${student.externalId}-${i}`}>
+																		{ g.groupName }
+																	</p>
+																))
+															: <>Нет групп</>
+													}</div>
+												</td>
+												
+												
 											</tr>
 										))}
 									</tbody>

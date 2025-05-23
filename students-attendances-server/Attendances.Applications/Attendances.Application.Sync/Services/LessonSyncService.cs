@@ -113,22 +113,26 @@ internal class LessonSyncService : ILessonSyncProcessor, ILessonSyncManager
                 }
                 await dbContext.SaveChangesAsync();
             }
+
             try
             {
                 switch (@event.Action)
                 {
                     case SyncAction.Create:
-                        await _syncEventHandler.CreateLessonHandler(@event, syncType, async id => await NewIdCallback(id));
+                        await _syncEventHandler.CreateLessonHandler(@event, syncType,
+                            async id => await NewIdCallback(id));
                         break;
                     case SyncAction.Update:
-                        await _syncEventHandler.UpdateLessonHandler(@event, syncType, async id => await NewIdCallback(id));
+                        await _syncEventHandler.UpdateLessonHandler(@event, syncType,
+                            async id => await NewIdCallback(id));
                         break;
                     case SyncAction.Delete:
                         await _syncEventHandler.DeleteLessonHandler(@event, syncType);
                         break;
                 }
+
                 @event.Status = syncType == SyncProcessingType.Global ? SyncStatus.FullSync : SyncStatus.LocalSaved;
-                
+
                 dbContext.LessonSyncItems.Update(@event);
                 await dbContext.SaveChangesAsync();
             }

@@ -70,9 +70,13 @@ internal class LessonSyncEventHandler
 
             if (lessonEvent.Source == SyncSource.Local && syncType == SyncProcessingType.Global)
             {
-                var request = _mapper.Map<CreateLessonExternal>(lessonEvent.LessonInfo);
-                mappedLesson.ExternalId = await _lessonExternal.CreateLessonAsync(request);
-                await (newIdCallback?.Invoke(mappedLesson.ExternalId) ?? Task.CompletedTask);
+                await ExternalRequestHandler(async () =>
+                {
+                    var request = _mapper.Map<CreateLessonExternal>(lessonEvent.LessonInfo);
+                    mappedLesson.ExternalId = await _lessonExternal.CreateLessonAsync(request);
+                    
+                    await (newIdCallback?.Invoke(mappedLesson.ExternalId) ?? Task.CompletedTask);
+                });
             }
             if (lessonEvent.Status == SyncStatus.Processing)
             {
@@ -113,10 +117,13 @@ internal class LessonSyncEventHandler
                 var mappedLesson = _mapperToDomain.Map<LessonInfo>(lessonEvent.LessonInfo);
                 if (lessonEvent.Source == SyncSource.Local && syncType == SyncProcessingType.Global)
                 {
-                    var request = _mapper.Map<UpdateLessonExternal>(lessonEvent.LessonInfo);
+                    await ExternalRequestHandler(async () =>
+                    {
+                        var request = _mapper.Map<UpdateLessonExternal>(lessonEvent.LessonInfo);
                     
-                    lessonRecord.ExternalId = await _lessonExternal.UpdateLessonAsync(request);
-                    await (newIdCallback?.Invoke(lessonRecord.ExternalId) ?? Task.CompletedTask);
+                        lessonRecord.ExternalId = await _lessonExternal.UpdateLessonAsync(request);
+                        await (newIdCallback?.Invoke(lessonRecord.ExternalId) ?? Task.CompletedTask);
+                    });
                 }
                 if (lessonEvent.Status == SyncStatus.Processing)
                 {
@@ -159,8 +166,11 @@ internal class LessonSyncEventHandler
 
         if (lessonEvent.Source == SyncSource.Local && syncType == SyncProcessingType.Global)
         {
-            var request = _mapper.Map<DeleteLessonExternal>(lessonEvent.LessonInfo);
-            await _lessonExternal.DeleteLessonAsync(request);
+            await ExternalRequestHandler(async () =>
+            {
+                var request = _mapper.Map<DeleteLessonExternal>(lessonEvent.LessonInfo);
+                await _lessonExternal.DeleteLessonAsync(request);
+            });
         }
         if (lessonEvent.Status == SyncStatus.Processing)
         {
@@ -207,5 +217,15 @@ internal class LessonSyncEventHandler
         using var sha256 = SHA256.Create();
         var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj)));
         return Convert.ToHexString(hashBytes);
+    }
+
+    private async Task ExternalRequestHandler(Func<Task> externalAction)
+    {
+        try { await externalAction(); }
+        catch (ProcessException error)
+        {
+            Logger.LogError($"ExternalRequestHandler: {error.Message}");
+            if (error.Type != "notavailable") throw;
+        }
     }
 }

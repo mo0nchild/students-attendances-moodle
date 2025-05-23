@@ -18,6 +18,7 @@ export default function Header(): JSX.Element {
   };
 
   useEffect(() => {
+    console.log(user)
     if (!user) handleClose()
   }, [user])
 
