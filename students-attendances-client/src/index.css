@@ -1,3 +1,24 @@
+html body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+header {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.199);
+  border-width: 1px 0px;
+  border-bottom: 2px solid rgb(70, 70, 70);
+}
+main {
+  overflow: overlay;
+}
+
+footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
 :root {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -7,7 +28,7 @@
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #d0b2ff00;
+  background: #ffffffbb;
 }
 ::-webkit-scrollbar-thumb {
   background: #8a8a8a;

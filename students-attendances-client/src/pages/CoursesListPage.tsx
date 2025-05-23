@@ -68,11 +68,10 @@ export default function CoursesListPage(): JSX.Element {
             <Form className="d-flex flex-row justify-content-center gap-3">
               <Form.Group controlId="search"
                 style={{
-                  flexShrink: 0,
-                  flexGrow: 1
+                  width: '100%'
                 }}
               >
-                <Form.Label className="w-100 mx-2 text-start">Поиск по названию:</Form.Label>
+                <Form.Label className="text-start">Поиск по названию:</Form.Label>
                 <div className="gradient-input-wrapper mb-3">
                   <Form.Control
                     type="text"
@@ -84,7 +83,7 @@ export default function CoursesListPage(): JSX.Element {
                 </div>
               </Form.Group>
               <Form.Group controlId="clear-btn">
-                <Form.Label className="w-100 mx-2 text-start" style={{color: 'transparent'}}>a</Form.Label>
+                <Form.Label className="text-start" style={{color: 'transparent'}}>a</Form.Label>
                 <div className="gradient-input-wrapper mb-3">
                   <Button onClick={() => setSearch('')} style={{
                     backgroundColor: 'transparent', 
@@ -95,7 +94,7 @@ export default function CoursesListPage(): JSX.Element {
                 </div>
               </Form.Group>
               <Form.Group controlId="refresh-btn">
-                <Form.Label className="w-100 mx-2 text-start" style={{color: 'transparent'}}>a</Form.Label>
+                <Form.Label className="text-start" style={{color: 'transparent'}}>a</Form.Label>
                 <div className="gradient-input-wrapper mb-3">
                   <Button onClick={() => setSearch('')} style={{
                     backgroundColor: 'transparent', 

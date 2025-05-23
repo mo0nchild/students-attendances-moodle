@@ -5,6 +5,14 @@
 	height: 100%;
 }
 
+table {
+  table-layout: auto;
+}
+
+table td, th {
+  text-wrap-mode: nowrap;
+}
+
 .gradient-input-wrapper {
   padding: 2px; /* Толщина границы */
   border-radius: 12px;

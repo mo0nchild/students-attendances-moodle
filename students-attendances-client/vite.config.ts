@@ -102,9 +102,10 @@ export default defineConfig(() => ({
 		VitePWA(PWAOptions),
 	],
 	server: {
+		port: 5104,
 		https: {
-			key: fs.readFileSync(path.resolve(__dirname, 'certificates/vite.key')),
 			cert: fs.readFileSync(path.resolve(__dirname, 'certificates/vite.crt')),
+			key: fs.readFileSync(path.resolve(__dirname, 'certificates/vite.key')),
 		},
 	},
 	resolve: {
