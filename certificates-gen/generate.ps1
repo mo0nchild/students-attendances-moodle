@@ -1,11 +1,13 @@
+# Параметры
+param(
+    [string]$caName = "student_attendance",
+    [string]$localIp = "192.168.0.100",
+    [string]$certPassword = "1234567890",
+    [string]$certFolder = ".\certs"
+)
+
 # Путь к OpenSSL
 $openssl = "openssl"
-
-# Параметры
-$caName = "student_attendance"
-$localIp = "192.168.0.100"
-$certPassword = "1234567890"
-$certFolder = ".\certs"
 
 # Создание папки для сертификатов
 if (-not (Test-Path $certFolder)) {
