@@ -1,4 +1,4 @@
-# Путь к OpenSSL (проверь свой путь если у тебя не в PATH)
+# Путь к OpenSSL
 $openssl = "openssl"
 
 # Параметры
@@ -60,4 +60,4 @@ $viteExt | Set-Content "$certFolder\vite.ext"
 & $openssl x509 -req -in "$certFolder\vite.csr" -CA "$certFolder\myCA.pem" -CAkey "$certFolder\myCA.key" -CAcreateserial -out "$certFolder\vite.crt" -days 825 -sha256 -extfile "$certFolder\vite.ext"
 
 Write-Host "✅ Сертификаты успешно созданы в папке $certFolder"
-Write-Host "👉 Установи $certFolder\myCA.pem в доверенные корневые сертификаты на своих устройствах."
+Write-Host "👉 Сертификат CA $certFolder\myCA.pem в доверенные корневые сертификаты на своих устройствах."

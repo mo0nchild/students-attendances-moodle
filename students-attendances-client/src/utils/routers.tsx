@@ -13,7 +13,6 @@ import { roleKey } from './api';
 import AdminPage from '@pages/admin/AdminPage';
 import UpdateLessonPage from '@pages/UpdateLessonPage';
 import NotFoundPage from '@pages/NotFoundPage';
-import AttendanceSheetPage from '@pages/AttendanceSheetPage';
 
 export const loginPath = '/'
 export const adminPath = '/admin'
@@ -76,16 +75,6 @@ export const routers = createBrowserRouter([
 	{
 		path: '/lessons/attendance/:id',
 		element: <LessonAttendancePage/>,
-		loader: protectedLoader
-	},
-	{
-		path: '/lessons/sheet/all',
-		element: <AttendanceSheetPage/>,
-		loader: protectedLoader
-	},
-	{
-		path: '/lessons/sheet/:groupId',
-		element: <AttendanceSheetPage/>,
 		loader: protectedLoader
 	},
 	{

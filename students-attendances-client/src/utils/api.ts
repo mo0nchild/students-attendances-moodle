@@ -4,8 +4,8 @@ import { appStorage } from "./localstorage";
 import { tokenManager } from "./token-manager"
 import { useUserStore } from "@core/store/store";
 
-export const apiBaseUrl = `https://192.168.0.100:5103`;
-export const refreshUrl = `/accounts/getTokens/byRefresh`
+const apiBaseUrl = import.meta.env.VITE_API_URL;
+const refreshUrl = `/accounts/getTokens/byRefresh`
 
 export const accessTokenKey = 'accessToken'
 export const refreshTokenKey = 'refreshToken'

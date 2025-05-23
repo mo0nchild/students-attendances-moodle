@@ -1,3 +1,4 @@
+import AttendancesSheet from "@components/attendances/AttendancesSheet";
 import LessonTable from "@components/lessontable/LessonTable";
 import Loading from "@components/loading/Loading";
 import PageCard from "@components/pagecard/PageCard";
@@ -13,6 +14,7 @@ export default function LessonsListPage(): JSX.Element {
 	const { courses, fetchCourses } = useCourseStore()
 	const [ search, setSearch ] = useState(''); 
 
+	const [ attendancesReport, setAttendancesReport ] = useState<number>()
 	const navigate = useNavigate()
 
 	const filteredLesson = useMemo(() => {
@@ -124,7 +126,7 @@ export default function LessonsListPage(): JSX.Element {
 						<div className="gradient-input-wrapper" style={{width: 'fit-content'}}>
 							<Dropdown onSelect={(eventKey) => {
 								if (!eventKey) return
-								navigate(parseInt(eventKey) < 0 ? `/lessons/sheet/all` : `/lessons/sheet/${eventKey}`)
+								setAttendancesReport(parseInt(eventKey))
 							}}>
 								<Dropdown.Toggle variant="light" className="h-100"
 									style={{
@@ -146,8 +148,19 @@ export default function LessonsListPage(): JSX.Element {
 							</Dropdown>
 							</div>
 					</div>
+					<div className="mb-2">
+						{
+							attendancesReport 
+								? <AttendancesSheet onClose={() => setAttendancesReport(undefined)}
+										groupId={attendancesReport < 0 ? null : attendancesReport}/>
+								: <></>
+						}
+					</div>
 					<Loading isLoading={isLoading}>
 						<>
+						<div className='d-flex flex-row justify-content-start align-items-center'>
+							<h5 className="m-0">Список занятий:</h5>
+						</div>
 							{error && <Alert className="mb-2" variant="danger">{error}</Alert>}
 							{ 
 								filteredLesson.length > 0

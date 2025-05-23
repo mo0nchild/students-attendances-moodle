@@ -5,7 +5,7 @@
 #define SS_PIN 10    // Пин SDA (SS)
 #define BUZZER_PIN 5
 
-MFRC522 mfrc522(SS_PIN, RST_PIN);  // Создаём экземпляр MFRC522
+MFRC522 mfrc522(SS_PIN, RST_PIN);
 
 void setup() {
   Serial.begin(9600);   // Инициализация Serial-порта
@@ -17,11 +17,12 @@ void setup() {
 void loop() {
   // Проверяем: открыт ли порт на ПК (в браузере Web Serial API)
   if (!Serial.dtr()) {
-    delay(100); // Дадим немного CPU и не будем крутиться вхолостую
+    delay(100);
     return;
   }
-  // Если новая метка не обнаружена — выходим
+  // Если новая метка не обнаружена
   if (!mfrc522.PICC_IsNewCardPresent() || !mfrc522.PICC_ReadCardSerial()) {
+    delay(100);
     return;
   }
 
