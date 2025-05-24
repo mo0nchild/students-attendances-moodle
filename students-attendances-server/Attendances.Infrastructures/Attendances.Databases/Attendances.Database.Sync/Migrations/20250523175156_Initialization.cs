@@ -25,6 +25,7 @@ namespace Attendances.Database.Sync.Migrations
                     QueuedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
                     ExternalId = table.Column<long>(type: "bigint", nullable: true),
+                    InternalUuid = table.Column<Guid>(type: "uuid", nullable: true),
                     EntityVersion = table.Column<long>(type: "bigint", nullable: false),
                     ErrorMessage = table.Column<string>(type: "text", nullable: true),
                     LessonInfo = table.Column<string>(type: "text", nullable: false),

@@ -160,9 +160,6 @@ namespace Attendances.Database.University.Migrations
 
                     b.HasIndex("CourseUuid");
 
-                    b.HasIndex("ExternalId")
-                        .IsUnique();
-
                     b.HasIndex("GroupUuid");
 
                     b.HasIndex("Uuid")

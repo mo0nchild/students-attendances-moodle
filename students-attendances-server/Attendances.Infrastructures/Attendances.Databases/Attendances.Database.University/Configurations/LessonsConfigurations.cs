@@ -11,7 +11,6 @@ internal class LessonsConfigurations : IEntityTypeConfiguration<LessonInfo>
     {
         builder.ToTable(nameof(LessonInfo), "public");
         builder.HasIndex(item => item.Uuid).IsUnique();
-        builder.HasIndex(item => item.ExternalId).IsUnique();
 
         builder.Property(item => item.AttendanceId).IsRequired();
         builder.Property(item => item.Description).HasMaxLength(255).IsRequired();

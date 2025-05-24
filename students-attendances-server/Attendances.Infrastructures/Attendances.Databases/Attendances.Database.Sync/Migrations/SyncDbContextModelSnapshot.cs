@@ -47,6 +47,9 @@ namespace Attendances.Database.Sync.Migrations
                     b.Property<long?>("ExternalId")
                         .HasColumnType("bigint");
 
+                    b.Property<Guid?>("InternalUuid")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("LessonInfo")
                         .IsRequired()
                         .HasColumnType("text");

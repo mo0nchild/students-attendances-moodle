@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Attendances.Database.University.Migrations
 {
     [DbContext(typeof(UniversityDbContext))]
-    [Migration("20250517010219_Initialization")]
+    [Migration("20250523173116_Initialization")]
     partial class Initialization
     {
         /// <inheritdoc />
@@ -162,9 +162,6 @@ namespace Attendances.Database.University.Migrations
                     b.HasKey("Uuid");
 
                     b.HasIndex("CourseUuid");
-
-                    b.HasIndex("ExternalId")
-                        .IsUnique();
 
                     b.HasIndex("GroupUuid");
 

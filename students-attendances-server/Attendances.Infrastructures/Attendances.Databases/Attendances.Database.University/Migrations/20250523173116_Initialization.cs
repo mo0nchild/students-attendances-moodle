@@ -317,13 +317,6 @@ namespace Attendances.Database.University.Migrations
                 column: "CourseUuid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LessonInfo_ExternalId",
-                schema: "public",
-                table: "LessonInfo",
-                column: "ExternalId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_LessonInfo_GroupUuid",
                 schema: "public",
                 table: "LessonInfo",

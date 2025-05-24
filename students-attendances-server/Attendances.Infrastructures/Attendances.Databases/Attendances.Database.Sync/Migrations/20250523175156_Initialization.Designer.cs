@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Attendances.Database.Sync.Migrations
 {
     [DbContext(typeof(SyncDbContext))]
-    [Migration("20250514173131_Initialization")]
+    [Migration("20250523175156_Initialization")]
     partial class Initialization
     {
         /// <inheritdoc />
@@ -49,6 +49,9 @@ namespace Attendances.Database.Sync.Migrations
 
                     b.Property<long?>("ExternalId")
                         .HasColumnType("bigint");
+
+                    b.Property<Guid?>("InternalUuid")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("LessonInfo")
                         .IsRequired()

@@ -10,6 +10,7 @@ public class LessonSyncItem : BaseEntity
     public DateTime QueuedAt { get; set; } = DateTime.UtcNow;
     public SyncStatus Status { get; set; } = SyncStatus.Processing;
     public long? ExternalId { get; set; } = default;
+    public Guid? InternalUuid { get; set; } = default;
     public long EntityVersion { get; set; } = default;
     
     public string? ErrorMessage { get; set; } = null;

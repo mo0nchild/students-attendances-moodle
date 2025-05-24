@@ -49,7 +49,7 @@ internal class LessonSyncEventHandler
         if (courseInfo == null)
         {
             Logger.LogWarning($"Course {lessonEvent.LessonInfo.CourseId} not found");
-            return;
+            throw new ProcessException($"Course {lessonEvent.LessonInfo.CourseId} not found");
         }
         await using var transaction = await dbContext.BeginTransactionAsync();
         try
@@ -70,16 +70,36 @@ internal class LessonSyncEventHandler
 
             if (lessonEvent.Source == SyncSource.Local && syncType == SyncProcessingType.Global)
             {
+                var lessonRecord = await dbContext.Lessons.FirstOrDefaultAsync(item => item.ExternalId == lessonEvent.ExternalId);
+                if (lessonRecord == null && lessonEvent.Status == SyncStatus.LocalSaved)
+                {
+                    Logger.LogWarning($"Lesson {lessonEvent.LessonInfo.ExternalId} already not exists");
+                    return;
+                } 
                 await ExternalRequestHandler(async () =>
                 {
                     var request = _mapper.Map<CreateLessonExternal>(lessonEvent.LessonInfo);
                     mappedLesson.ExternalId = await _lessonExternal.CreateLessonAsync(request);
-                    
+
+                    if (lessonEvent.Status == SyncStatus.LocalSaved)
+                    {
+                        if (lessonRecord != null)
+                        {
+                            lessonRecord.ExternalId = mappedLesson.ExternalId;
+                            await dbContext.SaveChangesAsync();
+                        }
+                    }
                     await (newIdCallback?.Invoke(mappedLesson.ExternalId) ?? Task.CompletedTask);
                 });
+                
             }
             if (lessonEvent.Status == SyncStatus.Processing)
             {
+                if (lessonEvent.Source == SyncSource.Local && syncType == SyncProcessingType.Local)
+                {
+                    mappedLesson.ExternalId = -1 * Guid.NewGuid().GetHashCode();
+                    await (newIdCallback?.Invoke(mappedLesson.ExternalId) ?? Task.CompletedTask);
+                }
                 await dbContext.Lessons.AddRangeAsync(mappedLesson);
                 await dbContext.SaveChangesAsync();
                 
@@ -89,7 +109,6 @@ internal class LessonSyncEventHandler
                 }
             } 
             await transaction.CommitAsync();
-            
         }
         catch (ProcessException error)
         {
@@ -106,45 +125,45 @@ internal class LessonSyncEventHandler
         var lessonRecord = await dbContext.Lessons.FirstOrDefaultAsync(item => item.ExternalId == lessonEvent.ExternalId);
         if (lessonRecord == null)
         {
-            Logger.LogWarning($"Lesson {lessonEvent.ExternalId} not found");
+            if (lessonEvent.Status == SyncStatus.LocalSaved)
+            {
+                Logger.LogWarning($"Lesson {lessonEvent.ExternalId} already not exists");
+                return;
+            }
             throw new ProcessException($"Lesson {lessonEvent.ExternalId} not found");
-        }
+        } 
         await using var transaction = await dbContext.BeginTransactionAsync();
         try
         {
-            if (lessonEvent.EntityVersion > lessonRecord.Version)
+            var mappedLesson = _mapperToDomain.Map<LessonInfo>(lessonEvent.LessonInfo);
+            if (lessonEvent.Source == SyncSource.Local && syncType == SyncProcessingType.Global)
             {
-                var mappedLesson = _mapperToDomain.Map<LessonInfo>(lessonEvent.LessonInfo);
-                if (lessonEvent.Source == SyncSource.Local && syncType == SyncProcessingType.Global)
+                mappedLesson.ExternalId = lessonEvent.ExternalId ?? throw new ArgumentNullException(nameof(lessonEvent.ExternalId));
+                
+                await ExternalRequestHandler(async () =>
                 {
-                    await ExternalRequestHandler(async () =>
-                    {
-                        var request = _mapper.Map<UpdateLessonExternal>(lessonEvent.LessonInfo);
-                    
-                        lessonRecord.ExternalId = await _lessonExternal.UpdateLessonAsync(request);
-                        await (newIdCallback?.Invoke(lessonRecord.ExternalId) ?? Task.CompletedTask);
-                    });
-                }
-                if (lessonEvent.Status == SyncStatus.Processing)
-                {
-                    lessonRecord.ModifiedTime = DateTime.UtcNow;
-                    lessonRecord.Version = lessonEvent.EntityVersion;
-                    
-                    lessonRecord.Description = mappedLesson.Description;
-                    lessonRecord.StartTime = mappedLesson.StartTime;
-                    lessonRecord.EndTime = mappedLesson.EndTime;
-                    lessonRecord.Attendances = mappedLesson.Attendances;
-                    
-                    dbContext.Lessons.Update(lessonRecord);
+                    var request = _mapper.Map<UpdateLessonExternal>(lessonEvent.LessonInfo);
+                    request.ExternalId = mappedLesson.ExternalId;
+                    lessonRecord.ExternalId = await _lessonExternal.UpdateLessonAsync(request);
+                
                     await dbContext.SaveChangesAsync();
-                }
-                Logger.LogInformation("Lesson sync update complete");
+                    await (newIdCallback?.Invoke(lessonRecord.ExternalId) ?? Task.CompletedTask);
+                });
             }
-            else
+            if (lessonEvent.Status == SyncStatus.Processing && lessonEvent.EntityVersion > lessonRecord.Version)
             {
-                Logger.LogWarning($"Event version {lessonEvent.EntityVersion} " +
-                                    $"is smaller than record version {lessonRecord.Version}");
+                lessonRecord.ModifiedTime = DateTime.UtcNow;
+                lessonRecord.Version = lessonEvent.EntityVersion;
+            
+                lessonRecord.Description = mappedLesson.Description;
+                lessonRecord.StartTime = mappedLesson.StartTime;
+                lessonRecord.EndTime = mappedLesson.EndTime;
+                lessonRecord.Attendances = mappedLesson.Attendances;
+            
+                dbContext.Lessons.Update(lessonRecord);
+                await dbContext.SaveChangesAsync();   
             }
+            Logger.LogInformation("Lesson sync update complete");
             await transaction.CommitAsync();
         }
         catch (ProcessException error)
@@ -158,22 +177,23 @@ internal class LessonSyncEventHandler
         using var dbContext = await _universityRepository.CreateRepositoryAsync();
         
         var lessonRecord = await dbContext.Lessons.FirstOrDefaultAsync(item => item.ExternalId == lessonEvent.ExternalId);
-        if (lessonRecord == null)
-        {
-            Logger.LogWarning($"Lesson {lessonEvent.LessonInfo.CourseId} not found");
-            return;
-        }
-
         if (lessonEvent.Source == SyncSource.Local && syncType == SyncProcessingType.Global)
         {
             await ExternalRequestHandler(async () =>
             {
-                var request = _mapper.Map<DeleteLessonExternal>(lessonEvent.LessonInfo);
-                await _lessonExternal.DeleteLessonAsync(request);
+                await _lessonExternal.DeleteLessonAsync(new DeleteLessonExternal()
+                {
+                    ExternalId = lessonEvent.ExternalId!.Value,
+                });
             });
         }
         if (lessonEvent.Status == SyncStatus.Processing)
         {
+            if (lessonRecord == null)
+            {
+                Logger.LogWarning($"Lesson {lessonEvent.LessonInfo.ExternalId} not found");
+                return;
+            }
             dbContext.Lessons.Remove(lessonRecord);
             await dbContext.SaveChangesAsync();
         }
@@ -225,7 +245,7 @@ internal class LessonSyncEventHandler
         catch (ProcessException error)
         {
             Logger.LogError($"ExternalRequestHandler: {error.Message}");
-            if (error.Type != "notavailable") throw;
+            throw;
         }
     }
 }

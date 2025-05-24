@@ -98,22 +98,18 @@ internal class LessonSyncService : ILessonSyncProcessor, ILessonSyncManager
             
             async Task NewIdCallback(long newLessonId)
             {
-                if (@event.Action == SyncAction.Create)
+                var externalIdToReplace = @event.ExternalId;
+                foreach (var currentItem in lessonSyncItems.Where(item => item.ExternalId == externalIdToReplace).ToList())
                 {
-                    @event.ExternalId = newLessonId;
-                    dbContext.LessonSyncItems.Update(@event);
-                }
-                else
-                {
-                    var relatedEvents = await dbContext.LessonSyncItems.Where(item => item.ExternalId == @event.ExternalId)
-                        .ToListAsync();
-                    foreach (var evt in relatedEvents) evt.ExternalId = newLessonId;
+                    currentItem.ExternalId = newLessonId;
+                } 
+                var relatedEvents = await dbContext.LessonSyncItems.Where(item => item.ExternalId == externalIdToReplace)
+                    .ToListAsync();
+                foreach (var evt in relatedEvents) evt.ExternalId = newLessonId;
 
-                    dbContext.LessonSyncItems.UpdateRange(relatedEvents);
-                }
+                dbContext.LessonSyncItems.UpdateRange(relatedEvents);
                 await dbContext.SaveChangesAsync();
             }
-
             try
             {
                 switch (@event.Action)
@@ -135,6 +131,11 @@ internal class LessonSyncService : ILessonSyncProcessor, ILessonSyncManager
 
                 dbContext.LessonSyncItems.Update(@event);
                 await dbContext.SaveChangesAsync();
+            }
+            catch (ProcessException error) when (error.Type == "notavailable")
+            {
+                Logger.LogWarning(error, $"Error processing sync event, external not available: {error.Message}");
+                throw;
             }
             catch (ProcessException error)
             {
