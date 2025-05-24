@@ -89,9 +89,18 @@ export default function LessonTable({ lessons, course, onSelect, onEdit }: Props
     </div>
 	)
 }
+ const formatter = new Intl.DateTimeFormat('ru-RU', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  timeZone: 'UTC'
+})
 function formatDateTime(isoDate: string): string {
 	const date = new Date(isoDate);
-	return `${date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })} ${date.toLocaleDateString('ru-RU')}`;
+ 
+	return `${formatter.format(date)}`;
 }
 
 function calculateDuration(start: string, end: string): string {

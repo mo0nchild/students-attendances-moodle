@@ -29,7 +29,7 @@ internal class MoodleLessonService : ILessonExternal
             {
                 { "attendanceid", lesson.AttendanceId },
                 { "description", lesson.Description },
-                { "sessiontime", new DateTimeOffset(lesson.StartTime).ToUnixTimeSeconds() },
+                { "sessiontime", new DateTimeOffset(lesson.StartTime).AddHours(-3).ToUnixTimeSeconds() },
                 { "duration", CalculateDuration(lesson.StartTime, lesson.EndTime) },
                 { "groupid", lesson.GroupId ?? 0 }
             });
@@ -44,8 +44,8 @@ internal class MoodleLessonService : ILessonExternal
         {
             long startTimestamp = new DateTimeOffset(startTime).ToUnixTimeMilliseconds();
             long endTimestamp = new DateTimeOffset(endTime).ToUnixTimeMilliseconds();
-    
-            return Math.Abs(endTimestamp - startTimestamp);
+            var duration = Math.Abs(endTimestamp - startTimestamp) / 1000.0;
+            return (long)duration;
         }
     }
     

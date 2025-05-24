@@ -43,7 +43,7 @@ public class LessonExternalInfoProfile : Profile
     {
         DateTimeOffset moscowTime = DateTimeOffset.FromUnixTimeSeconds(moscowUnixTime);
         DateTimeOffset utcTime = moscowTime.AddHours(3);
-        return utcTime.UtcDateTime;
+        return moscowTime.UtcDateTime;
     }
 }
 public class LessonAttendancesInfoProfile : Profile

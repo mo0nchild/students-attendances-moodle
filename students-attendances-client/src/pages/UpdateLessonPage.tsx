@@ -105,7 +105,10 @@ export default function UpdateLessonPage(): JSX.Element {
 									<Form.Control
 										type="text"
 										className="gradient-input"
-										value={name}
+										value={(() => {
+											const filter = name.replace(/<\/?[^>]+(>|$)/g, '')
+											return filter == '' ? 'Обычное занятие' : filter
+										})()}
 										onChange={(e) => setName(e.target.value)}
 										placeholder="Введите название урока"
 									/>
